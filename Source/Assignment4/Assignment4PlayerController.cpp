@@ -37,6 +37,7 @@ void AAssignment4PlayerController::SetupInputComponent()
 	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AAssignment4PlayerController::MoveToTouchLocation);
 
 	InputComponent->BindAction("ResetVR", IE_Pressed, this, &AAssignment4PlayerController::OnResetVR);
+	InputComponent->BindAction("Shoot", IE_Pressed, this, &AAssignment4PlayerController::OnShoot);
 }
 
 void AAssignment4PlayerController::OnResetVR()
@@ -109,4 +110,23 @@ void AAssignment4PlayerController::OnSetDestinationReleased()
 {
 	// clear flag to indicate we should stop updating the destination
 	bMoveToMouseCursor = false;
+}
+
+void AAssignment4PlayerController::OnShoot()
+{
+	GEngine->AddOnScreenDebugMessage(0, 2, FColor::Red, TEXT("PEW"));
+	AAssignment4Character* MyCharacter = Cast<AAssignment4Character>(GetPawn());
+
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+
+	if (Hit.bBlockingHit)
+	{
+		FVector Direction = Hit.ImpactPoint - MyCharacter->GetActorLocation();
+		Direction.Z = 0;
+		MyCharacter->SetActorRotation(FRotationMatrix::MakeFromX(Direction).Rotator());
+	}
+
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, MyCharacter->GetActorLocation());
+	MyCharacter->Shoot();
 }

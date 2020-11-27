@@ -24,6 +24,14 @@ public:
 	/** Returns CursorToWorld subobject **/
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* ProjectileOrigin;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileActor;
+
+	void Shoot();
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
